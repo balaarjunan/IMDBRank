@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<style>
+  body { width: 300px; }
+  textarea { width: 250px; height: 100px;}
+</style>
+<script>
+var movieName = null;
+var req = new XMLHttpRequest();
+function pasteSelection() {
+  chrome.tabs.getSelected(null, function(tab) {
+    chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function (response) {
+      var text = document.getElementById('text'); 
+      movieName = response.data;
+	req.open(
+	    "GET",
+	    "http://bfactor-imdb.appspot.com/?url_parameter="+movieName,
+	    true);
+	req.onload = displayRating;
+	req.send(null);	
+    });
+  });
+
+
+}
+function displayRating(){
+	text.innerHTML = req.responseText;
+}
+</script>
+</head>
+<body>
+<textarea id="text"> </textarea>
+<button onclick="pasteSelection(); ">Get Rank</button>
+</body>
+</html>
